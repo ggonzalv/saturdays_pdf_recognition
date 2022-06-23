@@ -29,8 +29,8 @@ def read_files(inputDir: str, nFiles=-1):
         if i == nFiles:
             break
         tFile = f"{inputDir}/{file}"
-        check_file(tFile)
-        images.extend(readPDF(tFile))
+        if check_file(tFile):
+            images.extend(readPDF(tFile))
         i += 1
     return images
 
@@ -90,9 +90,25 @@ def check_file(tFile: str):
         True: if file exists and is in proper format
     '''
     if not os.path.isfile(tFile):
-        print(f"{bcolors.FAIL}Error: File {tFile}  does not exist!{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}ERROR: File {tFile}  does not exist!{bcolors.ENDC}")
         return False
     if not tFile.endswith(".pdf"):
-        print(f"{bcolors.FAIL} File {options.tFile} is not a valid pdf file! {bcolors.ENDC}")
+        print(f"{bcolors.FAIL}ERROR: File {tFile} is not a valid pdf file! {bcolors.ENDC}")
+        return False
+    return True
+
+# ---------------------------------------------------------------
+# Check if directory exists
+# ---------------------------------------------------------------
+def check_dir(inputDir: str):
+    '''
+    Check if directory exists
+    input:
+        inputDir: name of the directory (str)
+    output:
+        True: if directory exists
+    '''
+    if not os.path.isdir(inputDir):
+        print(f"{bcolors.FAIL}ERROR: Directory {inputDir}  does not exist!{bcolors.ENDC}")
         return False
     return True

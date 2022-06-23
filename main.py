@@ -22,6 +22,8 @@ def main():
 
     # Create output directory if not exist
     createDir("images")
+    print(f"{bcolors.OKGREEN}Output dir images/ created successfully!{bcolors.ENDC}")
+
 
     # For tests only. Read just one file
     if tFile:
@@ -32,8 +34,11 @@ def main():
             images = readPDF(tFile, npages)
 
     elif inputDir:
-        # Read all files in directory
-        images = read_files(inputDir, nFiles)
+        # check if input directory exists
+        if check_dir(inputDir):
+            print(f"{bcolors.OKGREEN}Reading all files in {inputDir} and extracting images...{bcolors.ENDC}")
+            # Read all files in directory
+            images = read_files(inputDir, nFiles)
 
 
 # ---------------------------------------------------------------
