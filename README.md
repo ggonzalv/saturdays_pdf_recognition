@@ -28,3 +28,5 @@ python files_to_txt.py -n <input_file_name> -p <number_of_pages_to_read (optiona
 ```
 python files_to_txt.py -i <input_directory> -f <number_of_files_to_read (optional)>
 ```
+
+The output will be stored inside a new created folder ```images```.
