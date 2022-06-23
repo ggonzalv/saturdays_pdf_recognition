@@ -1,0 +1,4 @@
+numpy
+pandas
+pdf2image
+tqdm
