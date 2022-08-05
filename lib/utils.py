@@ -14,7 +14,7 @@ class bcolors:
 # ---------------------------------------------------------------
 # Create Directory if NOT exists
 # ---------------------------------------------------------------
-def createDir(directory: str):
+def createDir(directory: str, clean: bool=False):
     '''
     Create directory if not exists
     
@@ -31,6 +31,9 @@ def createDir(directory: str):
             else:
                 print(f"{bcolors.FAIL}Error: Directory {directory} cannot be created!{bcolors.ENDC}")
                 sys.exit()
+    elif clean:
+        for f in os.listdir(directory):
+            os.remove(os.path.join(directory, f))
 
 # ---------------------------------------------------------------
 # Read Configuration File

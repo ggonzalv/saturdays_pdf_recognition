@@ -26,17 +26,21 @@ def main():
 
     # Read all files and extract images in png format
     if options.read:
-        images = read_data(params)
+        trainImages = read_data(params)
 
-    # Load model and image to predict
+    # Load model 
     model = loadPredictor(params)
-    image = loadImage(options.input)
+
+    # Load pdf images and convert to cv2 format
+    read_input(options.input, options.verbose)
+    images = [loadImage(f'tmp/{image}') for image in sorted(os.listdir('tmp'))]
 
     # Extract tables and figures boxes
-    boxes = predictImage(model, image)
-
-    # Visualize results
-    visualizePredictions(boxes, image, params['outputFile'])
+    for i, image in enumerate(images):
+        boxes = predictImage(model, image)
+        # Visualize results
+        createDir('output')
+        visualizePredictions(boxes, image, f"output/{params['outputFile']}_pg{i+1}.png")
 
     
 
