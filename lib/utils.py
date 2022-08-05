@@ -65,3 +65,4 @@ def readConfig(configFile, verbose=False):
     except IOError:
         print(f"File {configFile} does not exist!")
         sys.exit()
+

@@ -2,6 +2,7 @@
 from lib.imageModel import *
 from lib.utils import *
 from lib.readData import *
+from lib.objectExtraction import *
 
 # ---------------------------------------------------------------
 # main
@@ -36,11 +37,15 @@ def main():
     images = [loadImage(f'tmp/{image}') for image in sorted(os.listdir('tmp'))]
 
     # Extract tables and figures boxes
+    createDir('output', True)
     for i, image in enumerate(images):
         boxes = predictImage(model, image)
+        tables = boxes[(boxes.pred_classes == 3) & (boxes.scores > 0.7)].pred_boxes # 3 is table class
+        figures = boxes[(boxes.pred_classes == 4) & (boxes.scores > 0.7)].pred_boxes # 4 is figure class
+        extractResults(tables,figures, image, i)
         # Visualize results
-        createDir('output')
-        visualizePredictions(boxes, image, f"output/{params['outputFile']}_pg{i+1}.png")
+        createDir('output_visualization')
+        visualizePredictions(boxes, image, f"output_visualization/{params['outputFile']}_pg{i+1}.png")
 
     
 
