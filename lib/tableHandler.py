@@ -20,12 +20,15 @@ def tableConvertor(img, ext: str, suffix: str):
     myconfig = r"-c preserve_interword_spaces=1 --oem 3 --psm 6"
     data = pytesseract.image_to_data(img, config=myconfig, output_type=Output.DICT, lang='eng')  
     df = pd.DataFrame(data)
+    df.to_csv(f"test{suffix}.csv")
     # Clean dataframe
     df = clean_df(df)
+    df.to_csv(f"test1{suffix}.csv")
     # Extract columns 
     df = get_columns(df)
+    df.to_csv(f"test2{suffix}.csv")
     # Save to file for testing
-    df.to_csv(f"test{suffix}.csv")
+    df.to_csv(f"test3{suffix}.csv")
     # Group by lines
     cells = df.groupby(['line_num']).apply(list).tolist()
     nrows, ncols = len(cells), len(cells[0])

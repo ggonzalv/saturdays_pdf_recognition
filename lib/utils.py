@@ -84,9 +84,13 @@ def clean_df(df : pd.DataFrame):
     # Keep only blocks with text and with reliable confidence
     # Get only high quality data
     df =  df[(df.conf.astype(float)>10)&(df.text!=' ')&(df.text!='')]
-    df = df[['line_num','word_num','left','top','width','height','conf','text']]
+    df = df[['par_num','line_num','word_num','left','top','width','height','conf','text']]
     df.reset_index(drop=True,inplace=True)
-    df.to_csv("test1.csv")
+    df.to_csv("test.csv")
+    if len(df['par_num'].unique()) > 1:
+        columnLabeler = ColumnLabeler()
+        df['line_num'] = df.apply(lambda x: columnLabeler.set_lines(x), axis=1)
+    df.drop("par_num", axis=1, inplace=True)
     return df
 
 # ---------------------------------------------------------------
@@ -122,6 +126,9 @@ class ColumnLabeler:
     Simple class to extract column for each piece of text
     '''
     def __init__(self):
+        self.prev_par = 1
+        self.prev_line = 1
+        self.correct_line = 1
         self.prev_left = 0
         self.prev_width = 0
         self.col_num = 1
@@ -136,8 +143,21 @@ class ColumnLabeler:
             self.prev_width = x['width']
             self.isFirst = False
             return self.col_num
-        if x['left'] - (self.prev_left + self.prev_width) > 15:
+        if x['left'] - (self.prev_left + self.prev_width) > 20:
             self.col_num += 1
         self.prev_left = x['left']
         self.prev_width = x['width']
         return self.col_num
+
+    def set_lines(self, x):
+        """
+        Set lines for column labeler
+        """
+        if x['par_num'] == self.prev_par and x['line_num'] == self.prev_line:
+            return self.correct_line
+        else:
+            self.prev_par = x['par_num']
+            self.prev_line = x['line_num']
+            self.correct_line += 1
+            return self.correct_line
+        
