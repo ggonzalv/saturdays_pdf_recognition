@@ -15,8 +15,9 @@ def main():
     parser.add_option("-r",  "--read",       dest="read",     action='store_true',   help="Read files and extract images (default: %default)")
     parser.add_option("-c",  "--config",     dest="config",                          help="Name of your configuration file (default: %default)")
     parser.add_option("-i",  "--input",     dest="input",                          help="Input file to extract tables and figures (default: %default)")
+    parser.add_option("-e",  "--extension",     dest="extension",                          help="Extension to extract tables (docx, xls, tex) (default: %default)")
     parser.add_option("-v",  "--verbose",    dest="verbose",  action='store_true',   help="Additional prints for debugging (default: %default)")
-    parser.set_defaults(read=False, config='config/config.ini', input='', verbose=False)
+    parser.set_defaults(read=False, config='config/config.ini', input='', extension="docx", verbose=False)
     (options,args) = parser.parse_args()
 
     if options.verbose:
@@ -42,7 +43,7 @@ def main():
         boxes = predictImage(model, image)
         tables = boxes[(boxes.pred_classes == 3) & (boxes.scores > 0.7)].pred_boxes # 3 is table class
         figures = boxes[(boxes.pred_classes == 4) & (boxes.scores > 0.7)].pred_boxes # 4 is figure class
-        extractResults(tables,figures, image, i)
+        extractResults(tables, options.extension, figures, image, i)
         # Visualize results
         createDir('output_visualization')
         visualizePredictions(boxes, image, f"output_visualization/{params['outputFile']}_pg{i+1}.png")

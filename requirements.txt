@@ -7,6 +7,9 @@ pillow
 scipy
 h5py
 matplotlib
+openpyxl
+pytesseract
+python-docx
 
 
 torch==1.9.0
