@@ -16,8 +16,9 @@ def main():
     parser.add_option("-c",  "--config",     dest="config",                          help="Name of your configuration file (default: %default)")
     parser.add_option("-i",  "--input",     dest="input",                          help="Input file to extract tables and figures (default: %default)")
     parser.add_option("-e",  "--extension",     dest="extension",                          help="Extension to extract tables (docx, xls, tex) (default: %default)")
+    parser.add_option("-t",  "--table",     dest="table",                          help="Path to table in jpg format to turn into editable file (default: %default)")
     parser.add_option("-v",  "--verbose",    dest="verbose",  action='store_true',   help="Additional prints for debugging (default: %default)")
-    parser.set_defaults(read=False, config='config/config.ini', input='', extension="docx", verbose=False)
+    parser.set_defaults(read=False, config='config/config.ini', input='', extension="docx", table='', verbose=False)
     (options,args) = parser.parse_args()
 
     if options.verbose:
@@ -29,6 +30,12 @@ def main():
     # Read all files and extract images in png format
     if options.read:
         trainImages = read_data(params)
+        
+    if options.table:
+        image = loadImage(options.table)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        tableConvertor(image, options.extension, f'_{options.table.replace(".jpg", "")}')
+        sys.exit("Table converted and stored in output folder")
 
     # Load model 
     model = loadPredictor(params)
