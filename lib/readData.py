@@ -115,3 +115,24 @@ def read_data(params: dict, verbose: bool=False):
             images = read_files(params['inputDir'], params['nFiles'])
 
     return images
+
+# ---------------------------------------------------------------
+# Read input file and extract images
+# ---------------------------------------------------------------
+def read_input(inputFile: str, verbose: bool=False):
+    '''
+    Read input file and extract images
+    input:
+        inputFile: input PDF file (str)
+        verbose: additional prints for debugging (bool)
+    output:
+        images: list of images (list)
+    '''
+    # check if input file exists and is proper format
+    if check_file(inputFile):
+        print(f"{bcolors.OKGREEN}Reading {inputFile} and extracting images...{bcolors.ENDC}")
+        # read file and convert it to images
+        images = readPDF(inputFile)
+    createDir('tmp', True)
+    for image in images:
+        image.save(f'tmp/{image.filename.split("/")[-1]}')

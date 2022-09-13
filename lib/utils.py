@@ -1,4 +1,6 @@
 import os,sys
+import pandas as pd
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -13,7 +15,7 @@ class bcolors:
 # ---------------------------------------------------------------
 # Create Directory if NOT exists
 # ---------------------------------------------------------------
-def createDir(directory: str):
+def createDir(directory: str, clean: bool=False):
     '''
     Create directory if not exists
     
@@ -30,6 +32,9 @@ def createDir(directory: str):
             else:
                 print(f"{bcolors.FAIL}Error: Directory {directory} cannot be created!{bcolors.ENDC}")
                 sys.exit()
+    elif clean:
+        for f in os.listdir(directory):
+            os.remove(os.path.join(directory, f))
 
 # ---------------------------------------------------------------
 # Read Configuration File
@@ -61,3 +66,98 @@ def readConfig(configFile, verbose=False):
     except IOError:
         print(f"File {configFile} does not exist!")
         sys.exit()
+    
+
+# ---------------------------------------------------------------
+# Clean empty pieces of text in dataframe
+# ---------------------------------------------------------------
+def clean_df(df : pd.DataFrame):
+    '''
+    Clean dataframe
+    
+    input:
+        df: dataframe with pytesseract image_to_data output (pd.DataFrame)
+    
+    output:
+        df: dataframe without empty pieces of text (pd.DataFrame)
+    '''
+    # Keep only blocks with text and with reliable confidence
+    # Get only high quality data
+    df =  df[(df.conf.astype(float)>10)&(df.text!=' ')&(df.text!='')]
+    df = df[['par_num','line_num','word_num','left','top','width','height','conf','text']]
+    df.reset_index(drop=True,inplace=True)
+    df.to_csv("test.csv")
+    if len(df['par_num'].unique()) > 1:
+        columnLabeler = ColumnLabeler()
+        df['line_num'] = df.apply(lambda x: columnLabeler.set_lines(x), axis=1)
+    df.drop("par_num", axis=1, inplace=True)
+    return df
+
+# ---------------------------------------------------------------
+# Preserve indentation using image_to_data and pandas
+# ---------------------------------------------------------------
+def get_columns(df : pd.DataFrame):
+    '''
+    Get columns for each piece of text 
+    
+    input:
+        df: dataframe with OCR text (pd.DataFrame)
+    
+    output:
+        df: dataframe with additional col_num column (str)
+    '''
+    grouped_df = df.groupby(['line_num'])
+    lines = list(grouped_df.groups.keys())
+    df_line = []
+    for line in lines:
+        sub_df = grouped_df.get_group(line)
+        sub_df.reset_index(drop=True,inplace=True)
+        # Indent text
+        columnLabeler = ColumnLabeler()
+        sub_df['col_num'] = sub_df.apply(lambda x: columnLabeler.get_column(x),axis=1)
+        df_line.append(sub_df)
+    df = pd.concat(df_line)
+    df = df.groupby(['line_num','col_num'])['text'].apply(lambda x: ' '.join(x))
+
+    return df
+
+class ColumnLabeler:
+    '''
+    Simple class to extract column for each piece of text
+    '''
+    def __init__(self):
+        self.prev_par = 1
+        self.prev_line = 1
+        self.correct_line = 1
+        self.prev_left = 0
+        self.prev_width = 0
+        self.col_num = 1
+        self.isFirst = True
+        
+    def get_column(self, x):
+        '''
+        Insert indeces in line
+        '''
+        if self.isFirst:
+            self.prev_left = x['left']
+            self.prev_width = x['width']
+            self.isFirst = False
+            return self.col_num
+        if x['left'] - (self.prev_left + self.prev_width) > 20:
+            self.col_num += 1
+        self.prev_left = x['left']
+        self.prev_width = x['width']
+        return self.col_num
+
+    def set_lines(self, x):
+        """
+        Set lines for column labeler
+        """
+        if x['par_num'] == self.prev_par and x['line_num'] == self.prev_line:
+            return self.correct_line
+        else:
+            self.prev_par = x['par_num']
+            self.prev_line = x['line_num']
+            self.correct_line += 1
+            return self.correct_line
+        
