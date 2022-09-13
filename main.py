@@ -1,11 +1,11 @@
 #from imageai.Detection import ObjectDetection
-from lib.FirstDetection import first_detection_image
+#from lib.FirstDetection import first_detection_image
 
 from lib.utils import *
 from lib.readData import *
 
 # ---------------------------------------------------------------
-# main
+# ma6in
 # ---------------------------------------------------------------
 def main():  
 
@@ -29,7 +29,7 @@ def main():
         images = read_data(params)
 
     print ("hello")
-    first_detection_image()
+    #first_detection_image()
 
     
 
