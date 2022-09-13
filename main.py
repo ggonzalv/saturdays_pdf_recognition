@@ -1,11 +1,12 @@
 #from imageai.Detection import ObjectDetection
+#from lib.FirstDetection import first_detection_image
 from lib.imageModel import *
 from lib.utils import *
 from lib.readData import *
 from lib.objectExtraction import *
 
 # ---------------------------------------------------------------
-# main
+# ma6in
 # ---------------------------------------------------------------
 def main():  
 
@@ -56,10 +57,6 @@ def main():
         visualizePredictions(boxes, image, f"output_visualization/{params['outputFile']}_pg{i+1}.png")
 
     
-
-    
-
-
 # ---------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------
