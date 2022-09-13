@@ -24,3 +24,5 @@ einops
 tensorboardX
 scipy
 opencv-python
+flask==2.2.2
+unicorn
