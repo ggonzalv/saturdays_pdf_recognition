@@ -24,3 +24,9 @@ einops
 tensorboardX
 scipy
 opencv-python
+
+Werkzeug==0.16.1
+Flask==1.1.4
+#flask-restful
+#Flask-RESTplus==0.13.0
+MarkupSafe==2.0.1

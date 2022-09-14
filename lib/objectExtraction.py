@@ -72,7 +72,7 @@ def extractFigure(figure, image, suffix: str):
         suffix: suffix for output file
     '''
     img = image[figure[1]:figure[3], figure[0]:figure[2]]
-    cv2.imwrite(f'tmp_output_files/figure{suffix}.jpg', img)
+    cv2.imwrite(f'/tmp/test-api/tmp_output_files/figure{suffix}.jpg', img)
 
 # ---------------------------------------------------------------
 # Get coordinates from torch tensor

@@ -190,7 +190,7 @@ def compressOutput(verbose: bool = False):
     '''
     if verbose:
         print(f"{bcolors.OKBLUE}Compressing output file into zip format{bcolors.ENDC}")
-    shutil.make_archive('output', 'zip', 'tmp_output_files')
+    shutil.make_archive('/tmp/test-api/output', 'zip', '/tmp/test-api/tmp_output_files')
 
 
 # ------------------------------------------------------------
@@ -202,5 +202,5 @@ def cleanDirectories():
     '''
     Clean directories used during execution
     '''
-    shutil.rmtree('tmp')
-    shutil.rmtree('tmp_output_files')
+    shutil.rmtree('/tmp/test-api/images')
+    shutil.rmtree('/tmp/test-api/tmp_output_files')

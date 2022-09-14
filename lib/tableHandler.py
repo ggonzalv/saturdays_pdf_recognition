@@ -31,7 +31,7 @@ def tableConvertor(img, ext: str, suffix: str, tableMode: bool = False):
     # Group by lines
     cells = df.groupby(['line_num']).apply(list).tolist()
     nrows, ncols = len(cells), len(cells[0])
-    outputFile = f"{suffix}.{ext}" if tableMode else f"tmp_output_files/table{suffix}.{ext}"
+    outputFile = f"{suffix}.{ext}" if tableMode else f"/tmp/test-api/tmp_output_files/table{suffix}.{ext}"
     # Convert to specific format
     if ext == "tex":
         makeLatex(cells, ncols, outputFile)

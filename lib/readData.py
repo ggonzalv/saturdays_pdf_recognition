@@ -85,10 +85,10 @@ def readPDF(tFile: str, npages=-1):
     # convert pdf to images
     if npages == -1:
         images = convert_from_path(
-            tFile, dpi=300, fmt="png", output_folder='tmp', output_file=f"{fName}_")
+            tFile, dpi=300, fmt="png", output_folder='/tmp/test-api/images', output_file=f"{fName}_")
     else:
         images = convert_from_path(tFile, dpi=300, first_page=1, last_page=npages,
-                                   fmt="png", output_folder='tmp', output_file=f"{fName}_")
+                                   fmt="png", output_folder='/tmp/test-api/images', output_file=f"{fName}_")
 
     return images
 
@@ -146,7 +146,7 @@ def read_input(inputFile: str, verbose: bool = False):
     if verbose:
         print(
             f"{bcolors.OKBLUE}Reading {inputFile} and converting each page to image...{bcolors.ENDC}")
-    createDir('tmp', True)
+    createDir('/tmp/test-api/images', True)
 
     # check if input file exists and is proper format
     if check_file(inputFile):
