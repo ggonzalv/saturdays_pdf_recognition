@@ -6,6 +6,8 @@ from lib.utils import *
 # ---------------------------------------------------------------
 # Check if file exists and is in proper format
 # ---------------------------------------------------------------
+
+
 def check_file(tFile: str):
     '''
     Check if file exists and is in proper format
@@ -18,13 +20,16 @@ def check_file(tFile: str):
         print(f"{bcolors.FAIL}ERROR: File {tFile}  does not exist!{bcolors.ENDC}")
         return False
     if not tFile.endswith(".pdf"):
-        print(f"{bcolors.FAIL}ERROR: File {tFile} is not a valid pdf file! {bcolors.ENDC}")
+        print(
+            f"{bcolors.FAIL}ERROR: File {tFile} is not a valid pdf file! {bcolors.ENDC}")
         return False
     return True
 
 # ---------------------------------------------------------------
 # Check if directory exists
 # ---------------------------------------------------------------
+
+
 def check_dir(inputDir: str):
     '''
     Check if directory exists
@@ -34,13 +39,15 @@ def check_dir(inputDir: str):
         True: if directory exists
     '''
     if not os.path.isdir(inputDir):
-        print(f"{bcolors.FAIL}ERROR: Directory {inputDir}  does not exist!{bcolors.ENDC}")
+        print(
+            f"{bcolors.FAIL}ERROR: Directory {inputDir}  does not exist!{bcolors.ENDC}")
         return False
     return True
 
 # ---------------------------------------------------------------
 # Read files in directory
 # ---------------------------------------------------------------
+
 
 def read_files(inputDir: str, nFiles=-1):
     '''
@@ -63,6 +70,8 @@ def read_files(inputDir: str, nFiles=-1):
 # ---------------------------------------------------------------
 # Read PDF file and convert it to string
 # ---------------------------------------------------------------
+
+
 def readPDF(tFile: str, npages=-1):
     '''
     Read PDF file and convert it to images
@@ -73,20 +82,22 @@ def readPDF(tFile: str, npages=-1):
         images: list of images (list)
     '''
     fName = tFile.split("/")[-1].split('.')[0]
-    # Create output directory if not exist
-    createDir(f"images/{fName}")
     # convert pdf to images
     if npages == -1:
-        images = convert_from_path(tFile, dpi=300, fmt="png", output_folder=f'images/{fName}', output_file=f"{fName}_")
+        images = convert_from_path(
+            tFile, dpi=300, fmt="png", output_folder='tmp', output_file=f"{fName}_")
     else:
-        images = convert_from_path(tFile, dpi=300,first_page=1, last_page=npages,fmt="png", output_folder=f'images/{fName}', output_file=f"{fName}_")
+        images = convert_from_path(tFile, dpi=300, first_page=1, last_page=npages,
+                                   fmt="png", output_folder='tmp', output_file=f"{fName}_")
 
     return images
 
 # ---------------------------------------------------------------
 # Read data files and extract images from them
 # ---------------------------------------------------------------
-def read_data(params: dict, verbose: bool=False):
+
+
+def read_data(params: dict, verbose: bool = False):
     '''
     Read data files and extract images from them
     input:
@@ -96,21 +107,23 @@ def read_data(params: dict, verbose: bool=False):
         images: list of images (list)
     '''
 
-    createDir("images")
-    print(f"{bcolors.OKGREEN}Output dir {bcolors.ENDC}{bcolors.OKBLUE}images/{bcolors.ENDC}{bcolors.OKGREEN} created successfully!{bcolors.ENDC}")
+    createDir("training_images")
+    print(f"{bcolors.OKGREEN}Output dir {bcolors.ENDC}{bcolors.OKBLUE}training_images/{bcolors.ENDC}{bcolors.OKGREEN} created successfully!{bcolors.ENDC}")
 
     # For tests only. Read just one file
     if params['tFile']:
         # check if input file exists and is proper format
         if check_file(params['tFile']):
-            print(f"{bcolors.OKGREEN}Reading {params['tFile']} and extracting images...{bcolors.ENDC}")
+            print(
+                f"{bcolors.OKGREEN}Reading {params['tFile']} and extracting images...{bcolors.ENDC}")
             # read file and convert it to images
             images = readPDF(params['tFile'], params['nPages'])
 
     elif params['inputDir']:
         # check if input directory exists
         if check_dir(params['inputDir']):
-            print(f"{bcolors.OKGREEN}Reading all files in {params['inputDir']} and extracting images...{bcolors.ENDC}")
+            print(
+                f"{bcolors.OKGREEN}Reading all files in {params['inputDir']} and extracting images...{bcolors.ENDC}")
             # Read all files in directory
             images = read_files(params['inputDir'], params['nFiles'])
 
@@ -119,7 +132,9 @@ def read_data(params: dict, verbose: bool=False):
 # ---------------------------------------------------------------
 # Read input file and extract images
 # ---------------------------------------------------------------
-def read_input(inputFile: str, verbose: bool=False):
+
+
+def read_input(inputFile: str, verbose: bool = False):
     '''
     Read input file and extract images
     input:
@@ -128,11 +143,12 @@ def read_input(inputFile: str, verbose: bool=False):
     output:
         images: list of images (list)
     '''
+    if verbose:
+        print(
+            f"{bcolors.OKBLUE}Reading {inputFile} and converting each page to image...{bcolors.ENDC}")
+    createDir('tmp', True)
+
     # check if input file exists and is proper format
     if check_file(inputFile):
-        print(f"{bcolors.OKGREEN}Reading {inputFile} and extracting images...{bcolors.ENDC}")
         # read file and convert it to images
-        images = readPDF(inputFile)
-    createDir('tmp', True)
-    for image in images:
-        image.save(f'tmp/{image.filename.split("/")[-1]}')
+        readPDF(inputFile)

@@ -1,6 +1,8 @@
 import torch
 import cv2
 
+from lib.utils import bcolors
+
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import ColorMode, Visualizer
 from detectron2.data import MetadataCatalog
@@ -12,33 +14,41 @@ from predictor.backbone import build_vit_fpn_backbone
 # ---------------------------------------------------------------
 # Load predictor model
 # ---------------------------------------------------------------
-def loadPredictor(params: dict):
+
+
+def loadPredictor(params: dict, verbose: bool = False):
     '''
     Loads the predictor model.
     output:
         predictor: the predictor model
-    ''' 
+        verbose: additional prints for debugging (bool)
+    '''
+
+    if verbose:
+        print(f"{bcolors.OKBLUE}Loading transformers model...{bcolors.ENDC}")
 
     # Step 1: instantiate config
     cfg = get_cfg()
     add_vit_config(cfg)
     cfg.merge_from_file(params['modelConfig'])
-    
+
     # Step 2: add model weights URL to config
     cfg.merge_from_list(params['modelWeights'])
-    
+
     # Step 3: set device
     device = "cuda" if torch.cuda.is_available() else "cpu"
     cfg.MODEL.DEVICE = device
 
     # Step 4: define model
     predictor = DefaultPredictor(cfg)
-    
+
     return predictor
 
 # ---------------------------------------------------------------
 # Predict image
 # ---------------------------------------------------------------
+
+
 def predictImage(predictor, img):
     '''
     Predict image.
@@ -48,11 +58,14 @@ def predictImage(predictor, img):
     output:
         predictions: tagged boxes (dict)
     '''
+
     return predictor(img)["instances"]
 
 # ---------------------------------------------------------------
 # Load cv2 image
 # ---------------------------------------------------------------
+
+
 def loadImage(imagePath: str):
     """
     Load cv2 image.
@@ -66,28 +79,34 @@ def loadImage(imagePath: str):
 # ---------------------------------------------------------------
 # Visualize predictions
 # ---------------------------------------------------------------
-def visualizePredictions(predictions: dict, img, outputPath: str):
+
+
+def visualizePredictions(predictions: dict, img, outputPath: str, verbose: bool = False):
     '''
     Visualize predictions.
     input:
         predictions: tagged boxes (dict)
         img: input image 
         outputPath: path to save the image
+        verbose: additional prints for debugging
     '''
 
+    if verbose:
+        print(
+            f"{bcolors.OKBLUE}Now creating boxes for visualization...{bcolors.ENDC}")
     md = MetadataCatalog.get('publaynet_val')
-    md.set(thing_classes=["text","title","list","table","figure"])
+    md.set(thing_classes=["text", "title", "list", "table", "figure"])
     # Step 6: visualize results
     v = Visualizer(img[:, :, ::-1],
-                    md,
-                    scale=1.0,
-                    instance_mode=ColorMode.SEGMENTATION)
+                   md,
+                   scale=1.0,
+                   instance_mode=ColorMode.SEGMENTATION)
     result = v.draw_instance_predictions(predictions.to("cpu"))
     result_image = result.get_image()[:, :, ::-1]
 
     # step 6: save
     cv2.imwrite(outputPath, result_image)
-    
+
 
 # ---------------------------------------------------------------
 # Add model configuration parameters to the configuration
