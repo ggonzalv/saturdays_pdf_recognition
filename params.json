@@ -1,0 +1,4 @@
+{
+    "modelWeights": ["MODEL.WEIGHTS","https://layoutlm.blob.core.windows.net/dit/dit-fts/publaynet_dit-b_mrcnn.pth"],
+    "modelConfig": "config/maskrcnn_dit_base.yaml"
+}

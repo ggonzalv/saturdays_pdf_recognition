@@ -7,7 +7,7 @@ from lib.readData import *
 from lib.objectExtraction import *
 
 
-def main(input_file: str, format_output: str):
+def main(input_file: object, format_output: str):
 
     with open('params.json') as json_file:
         params = json.load(json_file)
@@ -15,15 +15,18 @@ def main(input_file: str, format_output: str):
     createDir('/tmp/test-api/tmp_output_files', True)
     createDir('/tmp/test-api/images/')
 
-    if input_file.endswith(".jpg"):
-        image = loadImage(input_file)
+    file_path = f'/tmp/test-api/{input_file.filename}'
+    input_file.save(file_path)
+
+    if file_path.endswith(".jpg"):
+        image = loadImage(file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tableConvertor(image, format_output,
-                       input_file.replace(".jpg", ""), True)
+                       file_path.replace(".jpg", ""), True)
         return
 
     model = loadPredictor(params)
-    read_input(input_file)
+    read_input(file_path)
     images = [loadImage(f'/tmp/test-api/images/{image}')
               for image in sorted(os.listdir('/tmp/test-api/images'))]
 
@@ -34,5 +37,5 @@ def main(input_file: str, format_output: str):
         figures = boxes[(boxes.pred_classes == 4) & (
             boxes.scores > 0.7)].pred_boxes  # 4 is figure class
         extractResults(tables, format_output, figures, image, i)
-    compressOutput()
+    compressOutput(file_path)
     cleanDirectories()

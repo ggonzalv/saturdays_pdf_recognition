@@ -182,15 +182,16 @@ class ColumnLabeler:
 # ------------------------------------------------------------
 
 
-def compressOutput(verbose: bool = False):
+def compressOutput(file_path: str, verbose: bool = False):
     '''
     Compress output file to zip file
     input:
+        file_path: name of the output file (str)
         verbose: additional prints for debugging (bool, optional)
     '''
     if verbose:
         print(f"{bcolors.OKBLUE}Compressing output file into zip format{bcolors.ENDC}")
-    shutil.make_archive('/tmp/test-api/output', 'zip', '/tmp/test-api/tmp_output_files')
+    shutil.make_archive(file_path.replace(".pdf", ""), 'zip', '/tmp/test-api/tmp_output_files')
 
 
 # ------------------------------------------------------------
