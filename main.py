@@ -23,7 +23,7 @@ def main():
     parser.add_option("-e",  "--extension",     dest="extension",
                       help="Extension to extract tables (docx, xlsx, tex) (default: %default)")
     parser.add_option("-t",  "--table",     dest="table",
-                      help="Path to table in jpg format to turn into editable file (default: %default)")
+                      help="Path to table in jpg/png format to turn into editable file (default: %default)")
     parser.add_option("-v",  "--verbose",    dest="verbose",  action='store_true',
                       help="Additional prints for debugging (default: %default)")
     parser.set_defaults(read=False, config='config/config.ini',
@@ -61,8 +61,8 @@ def main():
         image = loadImage(options.table)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tableConvertor(image, options.extension,
-                       options.table.replace(".jpg", ""), True)
-        print(f"{bcolors.OKGREEN}Table {options.table} converted to {options.extension} format in and stored in {options.table.replace('.jpg', '')}.{options.extension}{bcolors.ENDC}")
+                       options.table.replace(".jpg", "").replace(".png", ""), True)
+        print(f"{bcolors.OKGREEN}Table {options.table} converted to {options.extension} format in and stored in {options.table.replace('.jpg', '').replace('.png', '')}.{options.extension}{bcolors.ENDC}")
         sys.exit()
 
     # Load model
