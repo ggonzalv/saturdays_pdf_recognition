@@ -205,3 +205,18 @@ def cleanDirectories():
     '''
     shutil.rmtree('/tmp/test-api/images')
     shutil.rmtree('/tmp/test-api/tmp_output_files')
+
+
+# ------------------------------------------------------------
+# Get input file format
+# ------------------------------------------------------------
+def get_file_info(inputFile: str, format_output: str):
+    '''
+    Get format information from input
+    input:
+        inputFile: name of inputFile (str)
+        format_output: format of output file (str)
+    '''
+    fname, ftype = inputFile.rsplit('.',1)
+    outftype = '.zip' if ftype == "pdf" else f'.{format_output}'
+    return fname, outftype

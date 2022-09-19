@@ -18,11 +18,11 @@ def main(input_file: object, format_output: str):
     file_path = f'/tmp/test-api/{input_file.filename}'
     input_file.save(file_path)
 
-    if file_path.endswith(".jpg"):
+    if file_path.endswith(".jpg") or file_path.endswith(".png"):
         image = loadImage(file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         tableConvertor(image, format_output,
-                       file_path.replace(".jpg", ""), True)
+                       file_path.replace(".jpg", "").replace(".png", ""), True)
         return
 
     model = loadPredictor(params)
