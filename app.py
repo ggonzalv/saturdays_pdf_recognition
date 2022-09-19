@@ -90,10 +90,10 @@ def request_security_pdf(INPUT_FILE: str, X_API_KEY: str):
         INPUT_FILE: filename attached in the request (str)
         X_API_KEY: API Key Body (str)
     '''
-    # if API_KEY != X_API_KEY:
-    #     response_msg = '401 - Invalid Request - Unauthorized Request - API Key is not valid'
-    #     print(response_msg)
-    #     sys.exit(response_msg)
+    if API_KEY != X_API_KEY:
+        response_msg = '401 - Invalid Request - Unauthorized Request - API Key is not valid'
+        print(response_msg)
+        sys.exit(response_msg)
     if not INPUT_FILE.endswith('.pdf') and not INPUT_FILE.endswith('.jpg') and not INPUT_FILE.endswith('.png'):
         response_msg = f'400 - Invalid Request - Invalid Input File Format {INPUT_FILE} (not a PDF/jpg/png file)'
         print(response_msg)
