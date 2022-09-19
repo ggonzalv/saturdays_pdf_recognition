@@ -1,0 +1,5 @@
+include:
+  - 'devops/pipelines/staging.gitlab-ci.yml'
+stages:
+  - deploy
+  - cleanup

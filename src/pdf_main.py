@@ -7,7 +7,7 @@ from lib.readData import *
 from lib.objectExtraction import *
 
 
-def main(input_file: object, format_output: str):
+def pdf_main(input_file: object, format_output: str):
 
     with open('params.json') as json_file:
         params = json.load(json_file)

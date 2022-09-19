@@ -1,0 +1,8 @@
+Werkzeug==0.16.1
+Flask==1.1.4
+#flask-restful
+Flask-RESTplus==0.13.0
+MarkupSafe==2.0.1
+boto3==1.24.18
+botocore==1.27.18
+python-dotenv

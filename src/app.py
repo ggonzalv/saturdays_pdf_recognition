@@ -12,11 +12,11 @@ from botocore.exceptions import ClientError
 from flask_restplus import Api, Resource, fields, reqparse
 from flask import Flask
 from dotenv import load_dotenv
-from main import main
+from pdf_main import pdf_main
 from lib.utils import bcolors, get_file_info
 
 #from flask_ngrok import run_with_ngrok
-from pyngrok import conf, ngrok
+#from pyngrok import conf, ngrok
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -30,9 +30,9 @@ app = Flask(__name__)
 #conf.get_default().auth_token = "2End8bHg73QOy1gk2bpVTeSKa1C_5NzfibXoYK6e14Sn8pL7n"
 #conf.get_default().config_path = "/Users/galogonzalvo/.ngrok2/ngrok.yml"
 #conf.get_default().region = "us"
-ngrok.set_auth_token("2End8bHg73QOy1gk2bpVTeSKa1C_5NzfibXoYK6e14Sn8pL7n")
-http_tunnel = ngrok.connect(5001)
-print (http_tunnel)
+# ngrok.set_auth_token("2End8bHg73QOy1gk2bpVTeSKa1C_5NzfibXoYK6e14Sn8pL7n")
+# http_tunnel = ngrok.connect(5001)
+# print (http_tunnel)
 
 # Swagger
 werkzeug.cached_property = werkzeug.utils.cached_property
@@ -73,7 +73,7 @@ class extractFromPDF(Resource):
             format_output = self.post_parser.parse_args().get('extension')
             request_security_pdf(input_file.filename, '')
             fname, outftype = get_file_info(input_file.filename, format_output)       
-            main(input_file, format_output)
+            pdf_main(input_file, format_output)
             outputFile = f'/tmp/test-api/{fname}{outftype}'
             url_zip = uploadFile_ObjectPresignedUrl(outputFile, 'figures_and_tables/')
             return url_zip, 200
@@ -177,7 +177,15 @@ def s3_connection_resource():
     return s3_resource
 
 
+# ------------------------------------------------------------------------
+# MAIN - HEALTH DOCKER SERVER
+# ------------------------------------------------------------------------
+
+
+@app.route('/', methods=['GET'])
+def main():
+    return 'OK', 200
 
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run()
